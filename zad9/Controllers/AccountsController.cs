@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Mvc;
+using zad8.Models;
 using zad8.Repo;
 
 namespace zad8.Controllers;
@@ -16,6 +19,32 @@ public class AccountsController : ControllerBase
         _logger = logger;
         _context = context;
     }
+    
+    
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(AddUserDTO addUserDto)
+    {
+        var salt = Guid.NewGuid().ToString();
+        var password = addUserDto.Password;
+        var passwordHash = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+            password: password,
+            salt: Encoding.UTF8.GetBytes(salt),
+            prf: KeyDerivationPrf.HMACSHA512,
+            iterationCount: 10000,
+            numBytesRequested: 256 / 8
+        ));
+        
+        var account = new Account
+        {
+            Login = addUserDto.Login,
+            Password = passwordHash, //hasło posolone
+            Salt = salt
+        };
+        await _context.Account.AddAsync(account);
+        await _context.SaveChangesAsync();
+        return Ok("Dodano konto");
+    }
+    
     
     // [AllowAnonymous]
     // [HttpPost("login")]

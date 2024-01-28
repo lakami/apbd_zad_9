@@ -17,7 +17,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//config uwierzytelniania
+//config uwierzytelniania (powoduje sprawdzanie tokenu na zabezpieczonych endpointach)
 builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -64,6 +64,7 @@ app.Use(async ( context, next ) =>
 
 app.UseAuthorization();
 
+//dodanie uwierzytelniania
 app.UseAuthentication();
 
 app.MapControllers();
