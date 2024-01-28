@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using zad8.Models;
@@ -6,6 +7,7 @@ using zad8.Repo;
 
 namespace zad8.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class DoctorsController : ControllerBase

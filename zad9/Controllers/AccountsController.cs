@@ -17,7 +17,33 @@ public class AccountsController : ControllerBase
         _context = context;
     }
     
-    
+    // [AllowAnonymous]
+    // [HttpPost("login")]
+    // public IActionResult Login(LoginRequest loginRequest)
+    // {
+    //     var account = _context.Account
+    //         .Where(a => a.Login == loginRequest.Login)
+    //         .FirstOrDefault();
+    //     
+    //     string passwordHash = account.Password;
+    //     string crunchPassword = "";
+    //     
+    //     //walidacja hasła
+    //     if (passwordHash != crunchPassword)
+    //     {
+    //     return Unauthorized("Niepoprawne hasło");
+    //     }
+    //     
+    //     Claim[] accountClaims = new[]
+    //     {
+    //         new Claim(ClaimTypes.Name, "Roman"),
+    //         new Claim(ClaimTypes.Role, "admin"),
+    //         new Claim(ClaimTypes.Role, "user")
+    //     };
+    //     
+    //     SymerticSecurityKey key = new SymerticSecurityKey(Encoding.UTF8.GetBytes(_));
+    // }
+    //
     
 }
 
