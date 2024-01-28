@@ -13,10 +13,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//konfiguracja bazy danych
-builder.Services.AddDbContext<DatabaseContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 //config uwierzytelniania (powoduje sprawdzanie tokenu na zabezpieczonych endpointach)
 builder.Services.AddAuthentication(opt =>
 {
@@ -30,11 +26,17 @@ builder.Services.AddAuthentication(opt =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero,
-        ValidIssuer = "http://localhost:5001",
-        ValidAudience = "http://localhost:5001",
+        ValidIssuer = "http://localhost:5148",
+        ValidAudience = "http://localhost:5148",
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["SecretKey"]))
     };
 });
+
+//konfiguracja bazy danych
+builder.Services.AddDbContext<DatabaseContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 
 
 var app = builder.Build();
@@ -62,10 +64,11 @@ app.Use(async ( context, next ) =>
 
 // app.UseHttpsRedirection();
 
+//dodanie uwierzytelniania (MUSI BYĆ PRZED app.UseAuthorization())
+app.UseAuthentication();
+
 app.UseAuthorization();
 
-//dodanie uwierzytelniania
-app.UseAuthentication();
 
 app.MapControllers();
 
