@@ -22,6 +22,39 @@ namespace zad8.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("zad8.Account", b =>
+                {
+                    b.Property<int>("IdUser")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUser"));
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("refreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("refreshTokenExp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("IdUser");
+
+                    b.ToTable("Account");
+                });
+
             modelBuilder.Entity("zad8.Doctor", b =>
                 {
                     b.Property<int>("IdDoctor")
@@ -178,13 +211,13 @@ namespace zad8.Migrations
             modelBuilder.Entity("zad8.Prescription_Medicament", b =>
                 {
                     b.HasOne("zad8.Medicament", "Medicament")
-                        .WithMany()
+                        .WithMany("Prescription_Medicaments")
                         .HasForeignKey("IdMedicament")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("zad8.Prescription", "Prescription")
-                        .WithMany()
+                        .WithMany("Prescription_Medicaments")
                         .HasForeignKey("IdPrescription")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -199,9 +232,19 @@ namespace zad8.Migrations
                     b.Navigation("Prescriptions");
                 });
 
+            modelBuilder.Entity("zad8.Medicament", b =>
+                {
+                    b.Navigation("Prescription_Medicaments");
+                });
+
             modelBuilder.Entity("zad8.Patient", b =>
                 {
                     b.Navigation("Prescriptions");
+                });
+
+            modelBuilder.Entity("zad8.Prescription", b =>
+                {
+                    b.Navigation("Prescription_Medicaments");
                 });
 #pragma warning restore 612, 618
         }
