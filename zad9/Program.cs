@@ -23,6 +23,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.Use(async ( context, next ) =>
+{
+    try
+    {
+       await next();
+    }
+    catch (Exception e)
+    {
+        // zapisywanie do pliku logs.txt
+        File.AppendAllText("logs.txt", e.ToString() + "\n");
+        throw;
+    }
+});
+
 // app.UseHttpsRedirection();
 
 app.UseAuthorization();
